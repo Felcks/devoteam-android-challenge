@@ -7,22 +7,32 @@ import android.view.ViewGroup
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material.icons.outlined.StarOutline
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.twotone.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -60,13 +70,14 @@ class HomeFragment : Fragment() {
     private fun ScreenContent() {
         DesafioEmJetpackComposeTheme {
             ProvideImageLoader {
-                Surface(color = MaterialTheme.colors.background) {
+                Surface(color = MaterialTheme.colorScheme.background) {
                     Scaffold(
                         topBar = { AppBar() }
-                    ) {
+                    ) { padding ->
                         MovieList(
                             movieList = viewModel.realMovies,
-                            onFavorOrDisfavor = viewModel::favorOrDisfavorMovie
+                            onFavorOrDisfavor = viewModel::favorOrDisfavorMovie,
+                            modifier = Modifier.padding(padding)
                         )
                     }
                 }
@@ -74,43 +85,39 @@ class HomeFragment : Fragment() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun AppBar() {
         TopAppBar(
             title = {
                 Text(text = stringResource(string.app_name))
             },
-            backgroundColor = MaterialTheme.colors.primarySurface,
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer, titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer),
             actions = {
                 IconButton(onClick = {
                     val action = HomeFragmentDirections.actionSeeFavoriteMovies()
                     findNavController().navigate(action)
                 }) {
                     Icon(
-                        imageVector = Icons.Filled.Bookmark,
+                        painter = painterResource(com.example.desafioemjetpackcompose.R.drawable.ic_bookmark), //Icons.Filled.Bookmark
                         contentDescription = null,
-                        tint = MaterialTheme.colors.onPrimary
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
         )
     }
 
-    @Composable
-    fun Greeting(name: String) {
-        Text(text = "Hello $name!")
-    }
-
     @ExperimentalFoundationApi
     @Composable
     fun MovieList(
+        movieList: List<Movie>,
         modifier: Modifier = Modifier,
-        movieList: List<Movie> = movies,
         onFavorOrDisfavor: (Movie) -> Unit
     ) {
         if (movieList.isNotEmpty())
             LazyVerticalGrid(
-                cells = GridCells.Fixed(2),
+                columns = GridCells.Fixed(2),
                 modifier = modifier,
             ) {
                 itemsIndexed(movieList) { index, movie ->
@@ -140,7 +147,7 @@ class HomeFragment : Fragment() {
     ) {
         Card(
             modifier = modifier,
-            elevation = 4.dp
+            elevation = CardDefaults.cardElevation(4.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -154,7 +161,8 @@ class HomeFragment : Fragment() {
                 NetworkImage(
                     movie.getPosterCompleteUrl(),
                     modifier = Modifier
-                        .size(width = 180.dp, height = 280.dp)
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.8f)
                         .clip(shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)),
                     contentScale = ContentScale.None,
                     contentDescription = null,
@@ -169,7 +177,7 @@ class HomeFragment : Fragment() {
                 ) {
                     Text(
                         text = movie.title,
-                        style = MaterialTheme.typography.subtitle1,
+                        style = MaterialTheme.typography.titleMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(5f)
@@ -182,10 +190,10 @@ class HomeFragment : Fragment() {
                     ) {
                         Icon(
                             imageVector = if (movie.isFavorite)
-                                Icons.Outlined.Star
+                                Icons.Filled.Star
                             else
-                                Icons.Outlined.StarOutline,
-                            tint = MaterialTheme.colors.primary,
+                                Icons.TwoTone.Star,
+                            tint = MaterialTheme.colorScheme.primary,
                             contentDescription = null,
                         )
                     }
@@ -199,11 +207,11 @@ class HomeFragment : Fragment() {
         viewModel.updateMoviesFavoriteStatus()
     }
 
-    @Preview(showBackground = true)
+    @Preview
     @Composable
-    fun DefaultPreview() {
+    fun AppBarPreview() {
         DesafioEmJetpackComposeTheme {
-            Greeting("Android")
+            AppBar()
         }
     }
 
@@ -211,18 +219,24 @@ class HomeFragment : Fragment() {
     @Preview
     @Composable
     fun MovieListPreview() {
-        MovieList(onFavorOrDisfavor = {})
+        DesafioEmJetpackComposeTheme {
+            MovieList(movieList = movies, onFavorOrDisfavor = {})
+        }
     }
 
     @Preview(widthDp = 320, heightDp = 480)
     @Composable
     fun MovieItemPreview() {
-        MovieItem(movie = movies.first(), onFavorOrDisfavor = {})
+        DesafioEmJetpackComposeTheme {
+            MovieItem(movie = movies.first(), onFavorOrDisfavor = {})
+        }
     }
 
-    @Preview
+    @Preview(widthDp = 320, heightDp = 480)
     @Composable
-    fun AppBarPreview() {
-        AppBar()
+    fun MovieItemFavPreview() {
+        DesafioEmJetpackComposeTheme {
+            MovieItem(movie = movies.last(), onFavorOrDisfavor = {})
+        }
     }
 }

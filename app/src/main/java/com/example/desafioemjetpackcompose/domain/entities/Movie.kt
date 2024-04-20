@@ -53,6 +53,24 @@ val movies = listOf(
         video = false,
         voteAverage = 1.5,
         backdropPath = "/hJuDvwzS0SPlsE6MNFOpznQltDZ.jpg",
-        genreIds = listOf(1, 2)
+        genreIds = listOf(1, 2),
+        isFavorite = false
+    ),
+    Movie(
+        id = 0,
+        originalTitle = "O retorno dos mortos vivos",
+        originalLanguage = "Portugues",
+        title = "The return of the living dead",
+        posterPath = "/lPsD10PP4rgUGiGR4CCXA6iY0QQ.jpg",
+        isAdult = false,
+        overview = "Descrição",
+        releaseDate = Date(),
+        popularity = 1.0,
+        voteCount = 100,
+        video = false,
+        voteAverage = 1.5,
+        backdropPath = "/hJuDvwzS0SPlsE6MNFOpznQltDZ.jpg",
+        genreIds = listOf(1, 2),
+        isFavorite = true,
     ),
 )

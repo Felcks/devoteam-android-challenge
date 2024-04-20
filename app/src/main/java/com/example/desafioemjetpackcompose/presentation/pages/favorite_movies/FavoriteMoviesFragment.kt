@@ -4,26 +4,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.sharp.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.sharp.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusModifier
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
@@ -45,7 +57,6 @@ import com.example.desafioemjetpackcompose.ui.theme.DesafioEmJetpackComposeTheme
 import com.example.desafioemjetpackcompose.utils.NetworkImage
 import com.example.desafioemjetpackcompose.utils.ProvideImageLoader
 import org.koin.android.ext.android.inject
-import java.time.format.TextStyle
 
 class FavoriteMoviesFragment : Fragment() {
 
@@ -69,21 +80,22 @@ class FavoriteMoviesFragment : Fragment() {
     private fun FavoriteMoviesScreenContent() {
         DesafioEmJetpackComposeTheme {
             ProvideImageLoader {
-                Surface(color = MaterialTheme.colors.background) {
+                Surface(color = MaterialTheme.colorScheme.background) {
                     Scaffold(
                         topBar = {
                             if (true)
                                 AppBar()
                             else
                                 Surface(
-                                    elevation = 8.dp
+                                    shadowElevation = 8.dp
                                 ) {
                                     Text(text = "")
                                 }
                         }
-                    ) {
+                    ) { padding ->
                         MovieList(
-                            movies = viewModel.movies
+                            movies = viewModel.movies,
+                            modifier = Modifier.padding(padding)
                         )
                     }
                 }
@@ -91,6 +103,7 @@ class FavoriteMoviesFragment : Fragment() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @ExperimentalComposeUiApi
     @Composable
     private fun AppBar() {
@@ -104,12 +117,16 @@ class FavoriteMoviesFragment : Fragment() {
                 title = {
                     Text(text = stringResource(R.string.favorite_movies))
                 },
-                backgroundColor = MaterialTheme.colors.primarySurface,
+                colors = TopAppBarDefaults.topAppBarColors().copy(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
                 navigationIcon = {
                     IconButton(onClick = { findNavController().navigateUp() }) {
                         Icon(
-                            imageVector = Icons.Sharp.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Sharp.ArrowBack,
                             contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(horizontal = 12.dp),
                         )
                     }
@@ -121,17 +138,17 @@ class FavoriteMoviesFragment : Fragment() {
                         Icon(
                             imageVector = Icons.Filled.Search,
                             contentDescription = null,
-                            tint = MaterialTheme.colors.onPrimary,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 }
             )
         else
             Surface(
-                color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(60.dp),
             ) {
                 Row(
                     modifier = Modifier
@@ -151,21 +168,24 @@ class FavoriteMoviesFragment : Fragment() {
                             setQuery(value)
                             viewModel.fetchFavoriteMovies(value)
                         },
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = MaterialTheme.colors.primary,
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.primary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                             focusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent,
-                            placeholderColor = MaterialTheme.colors.onPrimary,
-                            cursorColor = MaterialTheme.colors.onPrimary,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
+                            cursorColor = MaterialTheme.colorScheme.onPrimary,
+                            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
                         ),
-                        placeholder = { Text("Pesquisar") },
+                        placeholder = { Text(stringResource(R.string.search)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Search
                         ),
                         keyboardActions = KeyboardActions(
                             onSearch = {
-                                keyboardController?.hideSoftwareKeyboard()
+                                keyboardController?.hide()
                             }
                         )
                     )
@@ -205,8 +225,8 @@ class FavoriteMoviesFragment : Fragment() {
                 Alignment.Center
             ) {
                 Text(
-                    text = "Nenhum filme favorito encontrado.",
-                    style = MaterialTheme.typography.h6,
+                    text = stringResource(R.string.empty_favorite_movies),
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
@@ -224,11 +244,11 @@ class FavoriteMoviesFragment : Fragment() {
                 )
                 findNavController().navigate(action)
             },
-            elevation = 4.dp
+            colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Row(
                 modifier = Modifier
-                    .padding(end = 8.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -246,30 +266,33 @@ class FavoriteMoviesFragment : Fragment() {
                         .padding(start = 8.dp)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             movie.title,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(6f),
-                            style = MaterialTheme.typography.h6,
+                            style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = movie.releaseDate.toString(),
                             maxLines = 1,
-                            modifier = Modifier.weight(4f),
-                            style = MaterialTheme.typography.body2,
-                            color = MaterialTheme.colors.secondary
+                            modifier = Modifier.weight(3f).fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     }
                     Text(
                         text = movie.overview,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 8,
-                        style = MaterialTheme.typography.body2,
-                        modifier = Modifier.padding(top = 16.dp)
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 16.dp, end = 8.dp)
                     )
                 }
             }
@@ -285,24 +308,32 @@ class FavoriteMoviesFragment : Fragment() {
     @Preview
     @Composable
     fun AppBarPreview() {
-        AppBar()
+        DesafioEmJetpackComposeTheme {
+            AppBar()
+        }
     }
 
     @Preview
     @Composable
     fun PreviewMovieList() {
-        MovieList(movies = movies)
+        DesafioEmJetpackComposeTheme {
+            MovieList(movies = movies)
+        }
     }
 
-    @Preview
+    @Preview()
     @Composable
     fun PreviewEmptyMovieList() {
-        MovieList(movies = listOf())
+        DesafioEmJetpackComposeTheme {
+            MovieList(movies = listOf())
+        }
     }
 
     @Preview(widthDp = 360, heightDp = 480)
     @Composable
     fun PreviewMovieItem() {
-        MovieItem(movie = movies.first())
+        DesafioEmJetpackComposeTheme {
+            MovieItem(movie = movies.first())
+        }
     }
 }

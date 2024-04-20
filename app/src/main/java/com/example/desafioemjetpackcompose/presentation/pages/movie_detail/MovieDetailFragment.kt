@@ -8,27 +8,34 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.sharp.ArrowBack
 import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material.icons.outlined.StarOutline
-import androidx.compose.material.icons.sharp.ArrowBack
+import androidx.compose.material.icons.twotone.Star
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.desafioemjetpackcompose.R
 import com.example.desafioemjetpackcompose.domain.entities.Genre
 import com.example.desafioemjetpackcompose.domain.entities.Movie
 import com.example.desafioemjetpackcompose.domain.entities.movies
+import com.example.desafioemjetpackcompose.ui.theme.DesafioEmJetpackComposeTheme
 import com.example.desafioemjetpackcompose.utils.NetworkImage
 import com.example.desafioemjetpackcompose.utils.ProvideImageLoader
 import org.koin.android.ext.android.inject
@@ -49,23 +56,28 @@ class MovieDetailFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                ProvideImageLoader {
-                    Scaffold(topBar = { AppBar() }) {
-                        MovieDetailScreen(viewModel.genres)
+                DesafioEmJetpackComposeTheme {
+                    ProvideImageLoader {
+                        Scaffold(topBar = { AppBar() }) { paddingValues ->
+                            MovieDetailScreen(viewModel.genres, modifier = Modifier.padding(paddingValues))
+                        }
                     }
                 }
+
             }
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun AppBar() {
         TopAppBar(
             navigationIcon = {
                 IconButton(onClick = { findNavController().navigateUp() }) {
                     Icon(
-                        imageVector = Icons.Sharp.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Sharp.ArrowBack,
                         contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.padding(horizontal = 12.dp),
                     )
                 }
@@ -73,16 +85,16 @@ class MovieDetailFragment : Fragment() {
             title = {
                 Text(text = viewModel.mMovie.title)
             },
-            backgroundColor = MaterialTheme.colors.primarySurface,
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer, titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer),
             actions = {
                 IconButton(onClick = { viewModel.favorOrDisfavorMovie() }) {
                     Icon(
                         imageVector = if (viewModel.mMovie.isFavorite)
                             Icons.Outlined.Star
                         else
-                            Icons.Outlined.StarOutline,
+                            Icons.TwoTone.Star,
                         contentDescription = null,
-                        tint = MaterialTheme.colors.onPrimary,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
             }
@@ -90,10 +102,10 @@ class MovieDetailFragment : Fragment() {
     }
 
     @Composable
-    fun MovieDetailScreen(genres: List<Genre>) {
+    fun MovieDetailScreen(genres: List<Genre>, modifier: Modifier = Modifier) {
         val scrollState = rememberScrollState()
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = modifier.fillMaxSize()) {
             BoxWithConstraints(modifier = Modifier.weight(1f)) {
                 Surface {
                     Column(
@@ -143,26 +155,26 @@ class MovieDetailFragment : Fragment() {
         Column(Modifier.padding(16.dp)) {
             Text(
                 text = data?.title ?: "",
-                color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.h5
+                style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.padding(top = 16.dp))
             Text(
                 text = data?.releaseDate.toString(),
-                style = MaterialTheme.typography.overline,
-                color = MaterialTheme.colors.onBackground
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 text = data?.getGenresText(genres) ?: "",
-                style = MaterialTheme.typography.overline,
-                color = MaterialTheme.colors.onBackground
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.padding(top = 16.dp))
             Text(
                 text = data?.overview ?: "",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onBackground
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -171,9 +183,11 @@ class MovieDetailFragment : Fragment() {
     @Preview(widthDp = 640, heightDp = 360)
     @Composable
     fun PreviewLandscapeMode() {
-        ProvideImageLoader {
-            Scaffold(topBar = { AppBar() }) {
-                MovieDetailScreen(listOf())
+        DesafioEmJetpackComposeTheme {
+            ProvideImageLoader {
+                Scaffold(topBar = { AppBar() }) { paddingValues ->
+                    MovieDetailScreen(listOf(), Modifier.padding(paddingValues))
+                }
             }
         }
     }
@@ -181,9 +195,11 @@ class MovieDetailFragment : Fragment() {
     @Preview(widthDp = 360, heightDp = 480)
     @Composable
     fun PreviewPortraitMode() {
-        ProvideImageLoader {
-            Scaffold(topBar = { AppBar() }) {
-                MovieDetailScreen(listOf())
+        DesafioEmJetpackComposeTheme {
+            ProvideImageLoader {
+                Scaffold(topBar = { AppBar() }) { paddingValues ->
+                    MovieDetailScreen(listOf(),  Modifier.padding(paddingValues))
+                }
             }
         }
     }
@@ -191,6 +207,8 @@ class MovieDetailFragment : Fragment() {
     @Preview(showBackground = true)
     @Composable
     fun PreviewMovieInfo() {
-        MovieInfo(data = movies.first(), genres = listOf())
+        DesafioEmJetpackComposeTheme {
+            MovieInfo(data = movies.first(), genres = listOf())
+        }
     }
 }
