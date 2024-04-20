@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.desafioemjetpackcompose.domain.entities.Movie
+import com.example.desafioemjetpackcompose.movies.ui.models.MovieUIModel
 import com.example.desafioemjetpackcompose.domain.usecases.FavoriteOrDisfavorMovie
 import com.example.desafioemjetpackcompose.domain.usecases.GetAllMovies
 import com.example.desafioemjetpackcompose.domain.usecases.GetFavoriteMovies
@@ -26,7 +26,7 @@ class HomeFragmentViewModel(
     var loading by mutableStateOf(false)
     private var movieListScrollPosition = 0
 
-    var realMovies: List<Movie> by mutableStateOf(listOf())
+    var realMovies: List<MovieUIModel> by mutableStateOf(listOf())
         private set
 
     init {
@@ -37,7 +37,7 @@ class HomeFragmentViewModel(
         viewModelScope.launch {
             try {
                 val result = getAllMovies(currentPage)
-                appendNewMovies(result)
+                appendNewMovies(result.map { MovieUIModel.fromDomain(it) })
             } catch (t: Throwable) {
             }
         }
@@ -51,19 +51,19 @@ class HomeFragmentViewModel(
 
                 if (currentPage > 1) {
                     val result = getAllMovies(currentPage)
-                    appendNewMovies(result)
+                    appendNewMovies(result.map { MovieUIModel.fromDomain(it) })
                 }
                 loading = false
             }
         }
     }
 
-    fun favorOrDisfavorMovie(movie: Movie) {
+    fun favorOrDisfavorMovie(movie: MovieUIModel) {
         CoroutineScope(Dispatchers.IO).launch {
             val result = favoriteOrDisfavorMovieUseCase(movie.copy())
             val pos = realMovies.indexOf(movie)
             realMovies = realMovies.toMutableList().also {
-                it[pos] = result
+                it[pos] = MovieUIModel.fromDomain(result)
             }
         }
     }
@@ -73,17 +73,17 @@ class HomeFragmentViewModel(
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val favoriteMovies = getFavoriteMoviesUseCase()
-                    val favoriteMoviesIDs = favoriteMovies.map { it.id }
-                    realMovies.forEach {
-                        it.isFavorite = favoriteMoviesIDs.contains(it.id)
-                    }
+                    val favoriteMoviesIDs  = favoriteMovies.map { it.id }
+                        realMovies.forEach {
+                            it.isFavorite = favoriteMoviesIDs.contains(it.id)
+                        }
                 } catch (t: Throwable) {
                 }
             }
         }
     }
 
-    private fun appendNewMovies(movies: List<Movie>) {
+    private fun appendNewMovies(movies: List<MovieUIModel>) {
         realMovies = realMovies + movies
     }
 

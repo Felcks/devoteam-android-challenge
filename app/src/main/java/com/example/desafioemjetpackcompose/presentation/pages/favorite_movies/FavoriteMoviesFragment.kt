@@ -51,8 +51,8 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.desafioemjetpackcompose.R
-import com.example.desafioemjetpackcompose.domain.entities.Movie
-import com.example.desafioemjetpackcompose.domain.entities.movies
+import com.example.desafioemjetpackcompose.movies.ui.models.MovieUIModel
+import com.example.desafioemjetpackcompose.movies.ui.models.movieUIModels
 import com.example.desafioemjetpackcompose.ui.theme.DesafioEmJetpackComposeTheme
 import com.example.desafioemjetpackcompose.utils.NetworkImage
 import com.example.desafioemjetpackcompose.utils.ProvideImageLoader
@@ -207,7 +207,7 @@ class FavoriteMoviesFragment : Fragment() {
 
     @Composable
     private fun MovieList(
-        movies: List<Movie>,
+        movies: List<MovieUIModel>,
         modifier: Modifier = Modifier
     ) {
         if (movies.isNotEmpty()) {
@@ -234,7 +234,7 @@ class FavoriteMoviesFragment : Fragment() {
 
     @Composable
     private fun MovieItem(
-        movie: Movie,
+        movie: MovieUIModel,
         modifier: Modifier = Modifier
     ) {
         Card(
@@ -317,7 +317,7 @@ class FavoriteMoviesFragment : Fragment() {
     @Composable
     fun PreviewMovieList() {
         DesafioEmJetpackComposeTheme {
-            MovieList(movies = movies)
+            MovieList(movies = movieUIModels)
         }
     }
 
@@ -333,7 +333,7 @@ class FavoriteMoviesFragment : Fragment() {
     @Composable
     fun PreviewMovieItem() {
         DesafioEmJetpackComposeTheme {
-            MovieItem(movie = movies.first())
+            MovieItem(movie = movieUIModels.first())
         }
     }
 }

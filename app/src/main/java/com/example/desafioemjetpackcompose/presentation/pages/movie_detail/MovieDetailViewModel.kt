@@ -4,10 +4,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import com.example.desafioemjetpackcompose.domain.entities.Genre
-import com.example.desafioemjetpackcompose.domain.entities.Movie
+import com.example.desafioemjetpackcompose.movies.ui.models.GenreUIModel
+import com.example.desafioemjetpackcompose.movies.ui.models.MovieUIModel
 import com.example.desafioemjetpackcompose.domain.usecases.FavoriteOrDisfavorMovie
 import com.example.desafioemjetpackcompose.domain.usecases.GetAllMoviesGenres
+import com.example.desafioemjetpackcompose.movies.domain.models.Genre
+import com.example.desafioemjetpackcompose.movies.domain.models.Movie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,7 +43,8 @@ class MovieDetailViewModel(
     fun favorOrDisfavorMovie() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val result = favoriteOrDisfavorMovie(mMovie.copy())
+                //val result = favoriteOrDisfavorMovie(mMovie.copy())
+                val result = favoriteOrDisfavorMovie(mMovie)
                 mMovie = result
             } catch (e: Exception) {
 

@@ -41,8 +41,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.example.desafioemjetpackcompose.R.string
-import com.example.desafioemjetpackcompose.domain.entities.Movie
-import com.example.desafioemjetpackcompose.domain.entities.movies
+import com.example.desafioemjetpackcompose.movies.ui.models.MovieUIModel
+import com.example.desafioemjetpackcompose.movies.ui.models.movieUIModels
 import com.example.desafioemjetpackcompose.ui.theme.DesafioEmJetpackComposeTheme
 import com.example.desafioemjetpackcompose.utils.NetworkImage
 import com.example.desafioemjetpackcompose.utils.ProvideImageLoader
@@ -99,7 +99,7 @@ class HomeFragment : Fragment() {
                     findNavController().navigate(action)
                 }) {
                     Icon(
-                        painter = painterResource(com.example.desafioemjetpackcompose.R.drawable.ic_bookmark), //Icons.Filled.Bookmark
+                        painter = painterResource(com.example.desafioemjetpackcompose.R.drawable.ic_bookmark),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
@@ -111,9 +111,9 @@ class HomeFragment : Fragment() {
     @ExperimentalFoundationApi
     @Composable
     fun MovieList(
-        movieList: List<Movie>,
+        movieList: List<MovieUIModel>,
         modifier: Modifier = Modifier,
-        onFavorOrDisfavor: (Movie) -> Unit
+        onFavorOrDisfavor: (MovieUIModel) -> Unit
     ) {
         if (movieList.isNotEmpty())
             LazyVerticalGrid(
@@ -141,8 +141,8 @@ class HomeFragment : Fragment() {
 
     @Composable
     fun MovieItem(
-        movie: Movie,
-        onFavorOrDisfavor: (Movie) -> Unit,
+        movie: MovieUIModel,
+        onFavorOrDisfavor: (MovieUIModel) -> Unit,
         modifier: Modifier = Modifier
     ) {
         Card(
@@ -220,7 +220,7 @@ class HomeFragment : Fragment() {
     @Composable
     fun MovieListPreview() {
         DesafioEmJetpackComposeTheme {
-            MovieList(movieList = movies, onFavorOrDisfavor = {})
+            MovieList(movieList = movieUIModels, onFavorOrDisfavor = {})
         }
     }
 
@@ -228,7 +228,7 @@ class HomeFragment : Fragment() {
     @Composable
     fun MovieItemPreview() {
         DesafioEmJetpackComposeTheme {
-            MovieItem(movie = movies.first(), onFavorOrDisfavor = {})
+            MovieItem(movie = movieUIModels.first(), onFavorOrDisfavor = {})
         }
     }
 
@@ -236,7 +236,7 @@ class HomeFragment : Fragment() {
     @Composable
     fun MovieItemFavPreview() {
         DesafioEmJetpackComposeTheme {
-            MovieItem(movie = movies.last(), onFavorOrDisfavor = {})
+            MovieItem(movie = movieUIModels.last(), onFavorOrDisfavor = {})
         }
     }
 }

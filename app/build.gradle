@@ -60,6 +60,11 @@ dependencies {
     implementation composeBom
     androidTestImplementation composeBom
 
+    implementation(project(":movies:ui"))
+    implementation(project(":movies:domain"))
+    implementation(project(":movies:network"))
+    implementation(project(":movies:persistence"))
+
     implementation 'androidx.compose.material3:material3'
 
     // Android Studio Preview support

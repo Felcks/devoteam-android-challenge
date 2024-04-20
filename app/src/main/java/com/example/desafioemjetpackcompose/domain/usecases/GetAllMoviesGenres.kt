@@ -1,7 +1,8 @@
 package com.example.desafioemjetpackcompose.domain.usecases
 
-import com.example.desafioemjetpackcompose.domain.entities.Genre
-import com.example.desafioemjetpackcompose.domain.repositories.MovieRepository
+import com.example.desafioemjetpackcompose.movies.domain.models.Genre
+import com.example.desafioemjetpackcompose.movies.ui.models.GenreUIModel
+import com.example.desafioemjetpackcompose.movies.domain.repositories.MovieRepository
 
 class GetAllMoviesGenres(private val movieRepository: MovieRepository) {
 

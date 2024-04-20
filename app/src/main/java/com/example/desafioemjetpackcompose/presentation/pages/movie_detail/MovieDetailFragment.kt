@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.desafioemjetpackcompose.domain.entities.Genre
-import com.example.desafioemjetpackcompose.domain.entities.Movie
-import com.example.desafioemjetpackcompose.domain.entities.movies
+import com.example.desafioemjetpackcompose.movies.domain.models.Genre
+import com.example.desafioemjetpackcompose.movies.domain.models.Movie
+import com.example.desafioemjetpackcompose.movies.ui.models.movieUIModels
 import com.example.desafioemjetpackcompose.ui.theme.DesafioEmJetpackComposeTheme
 import com.example.desafioemjetpackcompose.utils.NetworkImage
 import com.example.desafioemjetpackcompose.utils.ProvideImageLoader
@@ -208,7 +208,7 @@ class MovieDetailFragment : Fragment() {
     @Composable
     fun PreviewMovieInfo() {
         DesafioEmJetpackComposeTheme {
-            MovieInfo(data = movies.first(), genres = listOf())
+            MovieInfo(data = movieUIModels.first(), genres = listOf())
         }
     }
 }

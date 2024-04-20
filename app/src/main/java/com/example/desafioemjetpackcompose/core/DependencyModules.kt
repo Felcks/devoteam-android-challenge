@@ -2,17 +2,12 @@ package com.example.desafioemjetpackcompose.core
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.desafioemjetpackcompose.core.api.MovieApi
-import com.example.desafioemjetpackcompose.core.api.RestApi
-import com.example.desafioemjetpackcompose.data.data_sources.MovieLocalDataSource
-import com.example.desafioemjetpackcompose.data.data_sources.MovieLocalDataSourceSharedPrefsImpl
-import com.example.desafioemjetpackcompose.data.data_sources.MovieLocalDataSourceSharedPrefsImpl.Companion.SHARED_PREFERENCES_KEY
-import com.example.desafioemjetpackcompose.data.data_sources.MovieRemoteDataSource
-import com.example.desafioemjetpackcompose.data.data_sources.MovieRemoteDataSourceImpl
-import com.example.desafioemjetpackcompose.data.repositories.MovieRepositoryImpl
-import com.example.desafioemjetpackcompose.domain.entities.Movie
-import com.example.desafioemjetpackcompose.domain.repositories.MovieRepository
+import com.example.desafioemjetpackcompose.movies.domain.data_sources.MovieLocalDataSource
+import com.example.desafioemjetpackcompose.movies.persistence.data_sources.MovieLocalDataSourceSharedPrefsImpl.Companion.SHARED_PREFERENCES_KEY
+import com.example.desafioemjetpackcompose.movies.domain.data_sources.MovieRemoteDataSource
+import com.example.desafioemjetpackcompose.movies.domain.repositories.MovieRepositoryImpl
 import com.example.desafioemjetpackcompose.domain.usecases.*
+import com.example.desafioemjetpackcompose.movies.domain.models.Movie
 import com.example.desafioemjetpackcompose.presentation.pages.favorite_movies.FavoriteMoviesViewModel
 import com.example.desafioemjetpackcompose.presentation.pages.home.HomeFragmentViewModel
 import com.example.desafioemjetpackcompose.presentation.pages.movie_detail.MovieDetailViewModel
@@ -24,7 +19,8 @@ object DependencyModules {
 
     val appModule = module {
 
-        single<MovieApi> { RestApi.getRetrofit().create(MovieApi::class.java) }
+        single<com.example.desafioemjetpackcompose.movies.network.api.MovieApi> { com.example.desafioemjetpackcompose.movies.network.api.RestApi.getRetrofit().create(
+            com.example.desafioemjetpackcompose.movies.network.api.MovieApi::class.java) }
         single<SharedPreferences> {
             App.instance.getSharedPreferences(
                 SHARED_PREFERENCES_KEY,
@@ -34,10 +30,19 @@ object DependencyModules {
         single<Gson> { Gson() }
 
 //        single<MovieLocalDataSource> { MovieLocalDataSourceImpl() }
-        single<MovieLocalDataSource> { MovieLocalDataSourceSharedPrefsImpl(get(), get()) }
-        single<MovieRemoteDataSource> { MovieRemoteDataSourceImpl(get()) }
+        single<MovieLocalDataSource> {
+            com.example.desafioemjetpackcompose.movies.persistence.data_sources.MovieLocalDataSourceSharedPrefsImpl(
+                get(),
+                get()
+            )
+        }
+        single<MovieRemoteDataSource> {
+            com.example.desafioemjetpackcompose.movies.network.data_sources.MovieRemoteDataSourceImpl(
+                get()
+            )
+        }
 
-        single<MovieRepository> { MovieRepositoryImpl(get(), get()) }
+        single<com.example.desafioemjetpackcompose.movies.domain.repositories.MovieRepository> { MovieRepositoryImpl(get(), get()) }
 
         factory { FavoriteOrDisfavorMovie(get()) }
         factory { GetAllMovies(get()) }

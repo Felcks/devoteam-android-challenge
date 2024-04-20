@@ -8,3 +8,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "DesafioEmJetpackCompose"
 include ':app'
+include ':movies:domain'
+include ':movies:ui'
+include ':movies:persistence'
+include ':movies:network'

@@ -17,7 +17,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim">
             <argument
                 android:name="movie"
-                app:argType="com.example.desafioemjetpackcompose.domain.entities.Movie"
+                app:argType="com.example.desafioemjetpackcompose.movies.ui.models.MovieUIModel"
                 app:nullable="false" />
         </action>
         <action
@@ -34,7 +34,7 @@
         android:label="MovieDetailFragment">
         <argument
             android:name="movie"
-            app:argType="com.example.desafioemjetpackcompose.domain.entities.Movie"
+            app:argType="com.example.desafioemjetpackcompose.movies.ui.models.MovieUIModel"
             app:nullable="false" />
     </fragment>
     <fragment
@@ -50,7 +50,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim">
             <argument
                 android:name="movie"
-                app:argType="com.example.desafioemjetpackcompose.domain.entities.Movie"
+                app:argType="com.example.desafioemjetpackcompose.movies.ui.models.MovieUIModel"
                 app:nullable="false" />
         </action>
     </fragment>
