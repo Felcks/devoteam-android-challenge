@@ -11,7 +11,7 @@ class MovieRepositoryImpl(
 ) : MovieRepository {
 
     override suspend fun getAllMovies(page: Int): List<Movie> {
-        val movieList = remoteDataSource.getAllMovies(page).results
+        val movieList = remoteDataSource.getAllMovies(page)
 
         val favoriteList = localDataSource.getCachedFavoriteMovies()
         for (movie in movieList) {

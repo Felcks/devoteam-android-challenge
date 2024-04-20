@@ -10,11 +10,11 @@ import com.example.desafioemjetpackcompose.movies.domain.models.Movie
 
 class MovieRemoteDataSourceImpl(private val movieApi: MovieApi) : MovieRemoteDataSource {
 
-    override suspend fun getAllMovies(page: Int): PageModel<Movie> {
+    override suspend fun getAllMovies(page: Int): List<Movie> {
         //val response = movieApi.getAllMovies(BuildConfig.API_KEY, page)
         val response = movieApi.getAllMovies("9ef244849e3fff41721f707bd23307a9", page)
         if (response.isSuccessful) {
-            return response.body()!!
+            return response.body()!!.results
         }
         else{
             if(response.code() == 401)

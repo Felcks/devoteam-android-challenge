@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.example.desafioemjetpackcompose.movies.domain.data_sources.MovieLocalDataSource
 import com.example.desafioemjetpackcompose.movies.domain.exceptions.ResourceNotFoundThrowable
 import com.example.desafioemjetpackcompose.movies.domain.models.Movie
+import com.example.desafioemjetpackcompose.movies.persistence.entities.MovieEntity
 import com.google.gson.Gson
 
 class MovieLocalDataSourceSharedPrefsImpl(
@@ -13,7 +14,7 @@ class MovieLocalDataSourceSharedPrefsImpl(
 
 
     override suspend fun cacheDetailMovie(movie: Movie) {
-        InCacheDao.cacheMovie(movie)
+        InCacheDao.cacheMovie(MovieEntity.fromDomain(movie))
     }
 
     override suspend fun getCachedDetailMovie(): Movie {
@@ -23,7 +24,7 @@ class MovieLocalDataSourceSharedPrefsImpl(
     override suspend fun cacheFavoriteMovies(movies: MutableList<Movie>) {
         val editor = sharedPreferences.edit()
 
-        val hashSet = movies.map { gson.toJson(it) }.toHashSet()
+        val hashSet = movies.map { MovieEntity.fromDomain(it) }.map { gson.toJson(it) }.toHashSet()
         editor.putStringSet(SHARED_PREFERENCES_FAVORITE_MOVIES_KEY, hashSet)
         editor.apply()
     }
@@ -36,7 +37,7 @@ class MovieLocalDataSourceSharedPrefsImpl(
         ) as HashSet<String>
 
         return hashSet.map {
-            gson.fromJson(it, Movie::class.java)
+            gson.fromJson(it, MovieEntity::class.java)
         }.filter {
             it.title.contains(filter, ignoreCase = true)
         }.filter {

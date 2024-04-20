@@ -15,7 +15,7 @@
         android:theme="@style/Theme.DesafioEmJetpackCompose">
 
         <activity
-            android:name=".presentation.pages.MainActivity"
+            android:name=".presentation.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.DesafioEmJetpackCompose.NoActionBar">

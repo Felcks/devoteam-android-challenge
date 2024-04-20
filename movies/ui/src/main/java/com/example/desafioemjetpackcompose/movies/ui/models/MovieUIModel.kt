@@ -55,7 +55,8 @@ data class MovieUIModel(
                     video = video,
                     voteAverage = voteAverage,
                     backdropPath = backdropPath,
-                    genreIds = genreIds
+                    genreIds = genreIds,
+                    isFavorite = isFavorite,
                 )
             }
         }

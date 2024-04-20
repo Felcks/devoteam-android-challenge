@@ -5,6 +5,6 @@ import com.example.desafioemjetpackcompose.movies.domain.models.Movie
 
 interface MovieRemoteDataSource {
 
-    suspend fun getAllMovies(page: Int = 1): PageModel<Movie>
+    suspend fun getAllMovies(page: Int = 1): List<Movie>
     suspend fun getAllMoviesGenres(): List<Genre>
 }
