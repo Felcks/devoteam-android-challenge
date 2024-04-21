@@ -60,7 +60,9 @@ class HomeFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                ScreenContent()
+                DesafioEmJetpackComposeTheme {
+                    ScreenContent()
+                }
             }
         }
     }
@@ -68,18 +70,16 @@ class HomeFragment : Fragment() {
     @ExperimentalFoundationApi
     @Composable
     private fun ScreenContent() {
-        DesafioEmJetpackComposeTheme {
-            ProvideImageLoader {
-                Surface(color = MaterialTheme.colorScheme.background) {
-                    Scaffold(
-                        topBar = { AppBar() }
-                    ) { padding ->
-                        MovieList(
-                            movieList = viewModel.realMovies,
-                            onFavorOrDisfavor = viewModel::favorOrDisfavorMovie,
-                            modifier = Modifier.padding(padding)
-                        )
-                    }
+        ProvideImageLoader {
+            Surface(color = MaterialTheme.colorScheme.background) {
+                Scaffold(
+                    topBar = { AppBar() }
+                ) { padding ->
+                    MovieList(
+                        movieList = viewModel.realMovies,
+                        onFavorOrDisfavor = viewModel::favorOrDisfavorMovie,
+                        modifier = Modifier.padding(padding)
+                    )
                 }
             }
         }
@@ -92,7 +92,10 @@ class HomeFragment : Fragment() {
             title = {
                 Text(text = stringResource(R.string.app_name))
             },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer, titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer),
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ),
             actions = {
                 IconButton(onClick = {
                     val action = HomeFragmentDirections.actionSeeFavoriteMovies()
@@ -110,7 +113,7 @@ class HomeFragment : Fragment() {
 
     @ExperimentalFoundationApi
     @Composable
-    fun MovieList(
+    fun  MovieList(
         movieList: List<MovieUIModel>,
         modifier: Modifier = Modifier,
         onFavorOrDisfavor: (MovieUIModel) -> Unit
@@ -201,7 +204,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
-    
+
     override fun onResume() {
         super.onResume()
         viewModel.updateMoviesFavoriteStatus()

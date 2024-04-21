@@ -10,7 +10,7 @@ data class MovieModel(
     val adult: Boolean,
     override val overview: String,
     val release_date: String?,
-    val genre_ids: List<Int>,
+    var genre_ids: List<Int>,
     override val id: Int,
     val original_title: String,
     val original_language: String,
@@ -20,7 +20,7 @@ data class MovieModel(
     val vote_count: Int,
     override val video: Boolean,
     val vote_average: Double,
-    val is_favorite: Boolean
+    var is_favorite: Boolean
 ) : Movie {
 
     override val originalTitle: String
@@ -39,12 +39,18 @@ data class MovieModel(
         get() = vote_average
     override val backdropPath: String
         get() = backdrop_path ?: ""
-    override var genreIds: List<Int> = listOf()
+
+    override var genreIds: List<Int>
         get() = genre_ids
-        set(value) { field = value }
-    override var isFavorite: Boolean = false
+        set(value)  {
+            genre_ids = value
+        }
+
+    override var isFavorite: Boolean
         get() = is_favorite
-        set(value) { field = value }
+        set(value)  {
+            is_favorite = value
+        }
 
     override fun getGenres(allGenreUIModels: List<Genre>): List<Genre> {
         TODO("Not yet implemented")

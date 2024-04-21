@@ -22,7 +22,7 @@ data class MovieUIModel(
     override val voteAverage: Double,
     override val backdropPath: String,
     override var genreIds: List<Int>,
-    override var isFavorite: Boolean = false
+    override var isFavorite: Boolean
 ) : Parcelable, Movie {
 
     override fun getGenres(allGenreUIModels: List<Genre>): List<Genre> {
@@ -56,7 +56,7 @@ data class MovieUIModel(
                     voteAverage = voteAverage,
                     backdropPath = backdropPath,
                     genreIds = genreIds,
-                    isFavorite = isFavorite,
+                    isFavorite =  isFavorite,
                 )
             }
         }

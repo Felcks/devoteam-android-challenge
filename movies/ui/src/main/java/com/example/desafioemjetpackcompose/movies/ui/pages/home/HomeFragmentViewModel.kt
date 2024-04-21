@@ -39,9 +39,7 @@ class HomeFragmentViewModel(
             try {
                 val result = getAllMovies(currentPage)
                 appendNewMovies(result.map { MovieUIModel.fromDomain(it) })
-            } catch (t: Throwable) {
-                Log.i("script2", t.toString())
-            }
+            } catch (t: Throwable) { }
         }
     }
 
