@@ -38,3 +38,8 @@ The challenge is to better understand how you take care of android development u
 * * *
 ## Email
 * E-mail: matheusfelipecorreaalves@gmail.com
+
+* ## Demonstration
+*  ![Home Screen](images/image1.png)
+*  ![Favorite Movies Screen](images/image2.png)
+*  ![Movie Detail Screen](images/image3.png)
